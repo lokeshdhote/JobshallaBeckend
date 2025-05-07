@@ -31,17 +31,17 @@ app.use(logger("tiny"));
 
 // app use this  -> / routes to as a prefix in index route
 // app.use("/",require("./Router/Indexroute.js"));
-const Indexroute = require("./Router/Indexroute.js")
-app.use("/",Indexroute)
+// const Indexroute = require("./Router/Indexroute.js")
+app.use("/",require("./Router/Indexroute.js"))
 app.use("/Student",require("./Router/StudentRoutes.js"));
 app.use("/Job",require("./Router/JobRoutes.js"));
 
 
 // With this
-// app.all("*", (req, res, next) => {
-//   next(new ErrorHandler(`Requested URL NOT Found: ${req.url}`, 404));
-// });   
 
+app.use((req, res, next) => {
+    next(new ErrorHandler(`Route not found: ${req.originalUrl}`, 404));
+  });
 app.use(generatedError);
 
 // app listen the port and run on it !

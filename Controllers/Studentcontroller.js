@@ -75,7 +75,82 @@ exports.home = catchAsync(async (req, res,next) => {
       }
     });
 
-    
+
+exports.skillsave  = catchAsync(async (req, res,next) => {
+  const { skill } = req.body;
+
+  // Validate that skill is provided
+  if (!skill) {
+    return next(new ErrorHandler("Skill name is required", 400));
+  }
+
+  // Find the student by the logged-in user (use req.user which was set in the auth middleware)
+  const student = await studentmodel.findById(req.user.id);
+
+  if (!student) {
+    return next(new ErrorHandler("Student not found", 404));
+  }
+
+  // Check if the skill already exists in the verifiedSkills array
+  const existingSkill = student.verifiedSkills.find(
+    (s) => s.skill.toLowerCase() === skill.toLowerCase()
+  );
+
+  if (existingSkill) {
+    // If the skill exists, update the 'verified' field to true
+    existingSkill.verified = true;
+    await student.save();
+    return res.status(200).json({
+      success: true,
+      message: "Skill updated and verified successfully",
+      student,
+    });
+  } else {
+    // If the skill doesn't exist, create a new skill and add it to the array
+    student.verifiedSkills.push({ skill, verified: true });
+    await student.save();
+    return res.status(200).json({
+      success: true,
+      message: "New skill added and verified successfully",
+      student,
+    });
+  }
+});
 
 
+exports.skillremove  = catchAsync(async (req, res,next) => {
+  const { skill } = req.body;
 
+  // Validate that skill is provided
+  if (!skill) {
+    return next(new ErrorHandler("Skill name is required", 400));
+  }
+
+  // Find the student by the logged-in user (use req.user which was set in the auth middleware)
+  const student = await studentmodel.findById(req.user.id);
+
+  if (!student) {
+    return next(new ErrorHandler("Student not found", 404));
+  }
+
+  // Check if the skill exists in the verifiedSkills array
+  // const skillIndex = student.verifiedSkills.findIndex(
+  //   (s) => s.skill.toLowerCase() === skill.toLowerCase()
+  // );
+
+  // if (skillIndex === -1) {
+  //   return next(new ErrorHandler("Skill not found in your profile", 404));
+  // }
+
+  // Remove the skill from the verifiedSkills array
+  student.verifiedSkills.splice(skillIndex, 1);
+
+  // Save the updated student document
+  await student.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Skill removed successfully",
+    student,
+  });
+});

@@ -33,6 +33,13 @@ router.get("/profile",isAuthenticated(Studuent),studentcontroller.Profile);
 //Edit profile route for student 
 // router.post("/Editprofile",isAuthenticated(Studuent),studentcontroller.editProfile);
 
+// skill test and pass then save in profile
+router.post("/skillsave",isAuthenticated(Studuent),studentcontroller.skillsave)
+
+// skill test and fail then remove in profile
+router.post("/skillremove",isAuthenticated(Studuent),studentcontroller.skillremove)
+
+
 
 
 

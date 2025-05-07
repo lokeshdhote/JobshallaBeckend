@@ -40,6 +40,10 @@ const JobSchema = new mongoose.Schema({
   // Array of job posts created by the company
   posts: [
     {
+      student:{
+         type: mongoose.Schema.Types.ObjectId,
+            ref: "Student", 
+      },
       role: {
         type: String,
         required: [true, "Job role is required"],
@@ -56,6 +60,7 @@ const JobSchema = new mongoose.Schema({
           type: String,
         },
       ],
+      location:String,
       experience: {
         type: Number,
         required: [true, "Experience is required"],

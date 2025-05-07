@@ -61,6 +61,9 @@ const StudentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
     ref: "Intership", 
     }]
+    ,achievement:[{
+      type:String
+    }]
 
 
 },

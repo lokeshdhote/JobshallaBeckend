@@ -1,10 +1,10 @@
 // Utils/ErrorHandler.js
 class ErrorHandler extends Error {
-    constructor(message,statuscode){
+    constructor(message, statusCode) {
         super(message);
-        this.statuscode = statuscode;
-        Error.captureStackTrace(this,this.constructor)
+        this.statusCode = statusCode;
+        Error.captureStackTrace(this, this.constructor);
     }
 }
 
-module.exports = ErrorHandler
+module.exports = ErrorHandler;
