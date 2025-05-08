@@ -3,71 +3,72 @@ var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 
 const StudentSchema = new mongoose.Schema({
-
-    name:{
-        type:String,
-        min: [2, "Name must have at least 2 characters"],
-        max: [20, "Name must be less than 20 characters"],
+  name: {
+    type: String,
+    minlength: [2, "Name must have at least 2 characters"],
+    maxlength: [20, "Name must be less than 20 characters"],
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: [true, "Email is required"],
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "Please provide a valid email address",
+    ],
+  },
+  password: {
+    type: String,
+    select: false,
+    required: [true, "Password is required"],
+    minlength: [6, "Password must be at least 6 characters"],
+    maxlength: [16, "Password must be at most 16 characters"],
+  },
+  gender: {
+    type: String,
+    required: [true, "Gender is required"],
+  },
+  dateOfBirth: {
+    type: Date,
+  },
+  verifiedSkills: [
+    {
+      skill: {
+        type: String,
+        required: true,
+      },
+      verified: {
+        type: Boolean,
+        default: false,
+      },
     },
-    email:{
+  ],
+
+  // New unified applications tracking
+  appliedPosts: [
+    {
+      postType: {
         type: String,
-      unique: true,
-      required: [true, "Email is required"],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please provide a valid email address",
-      ],
+        enum: ["JobPost", "InternshipPost"],
+        required: true,
+      },
+      post: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: "appliedPosts.postType",
+      },
+      applicationStatus: {
+        type: String,
+        enum: ["applied", "under review", "rejected", "accepted"],
+        default: "applied",
+      },
+      appliedDate: {
+        type: Date,
+        default: Date.now,
+      },
     },
-    password: {
-        type: String,
-        select: false,
-        required: [true, "Password is required"],
-        minLength: [6, "Password must be at least 6 characters"],
-        maxLength: [16, "Password must be at most 16 characters"],
-      },
-      gender: {
-        type: String,
-        required: [true, "Gender is required"],
-      },
-      dateOfBirth: {
-        type: Date, // Adding the date of birth field
-       
-      },
-      resetPasswordToken: {
-        type: String,
-        default: "0",
-      },
-      linkedin:{
-        type: String,
-      },
-      Github:{
-        type: String,
-      },
-      verifiedSkills: [{
-        skill: {
-            type: String,
-            required: true,
-        },
-        verified: {
-            type: Boolean,
-            default: false,
-        }
-    }],
-    Jobs:[{
-        type: mongoose.Schema.Types.ObjectId,
-    ref: "Job", 
-    }],
-    Interships:[{
-        type: mongoose.Schema.Types.ObjectId,
-    ref: "Intership", 
-    }]
-    ,achievement:[{
-      type:String
-    }]
-
-
-},
-{ timestamps: true })
+  ],
+}, { timestamps: true });
 
 
 

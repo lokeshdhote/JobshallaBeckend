@@ -154,3 +154,10 @@ exports.skillremove  = catchAsync(async (req, res,next) => {
     student,
   });
 });
+
+
+
+exports.allapplication= catchAsync(async (req, res,next) => {
+
+
+});

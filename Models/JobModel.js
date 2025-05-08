@@ -36,53 +36,23 @@ const JobSchema = new mongoose.Schema({
   linkedin: {
     type: String,
   },
-
-  // Array of job posts created by the company
-  posts: [
+  contactNumber: {
+    type: String,
+   
+  },
+  website: {
+    type: String,
+  },
+  jobPosts: [
     {
-      student:{
-         type: mongoose.Schema.Types.ObjectId,
-            ref: "Student", 
-      },
-      role: {
-        type: String,
-        required: [true, "Job role is required"],
-      },
-      title: {
-        type: String,
-        required: [true, "Job title is required"],
-      },
-      description: {
-        type: String,
-      },
-      skills: [
-        {
-          type: String,
-        },
-      ],
-      location:String,
-      experience: {
-        type: Number,
-        required: [true, "Experience is required"],
-      },
-      amount: {
-        type: Number,
-        required: [true, "Salary amount is required"],
-      },
-      mode: {
-        type: String,
-        enum: ["Hybrid", "Remote", "Office"],
-        required: [true, "Work mode is required"],
-      },
-      status: {
-        type: String,
-        enum: ["active", "closed"], // added enum here
-        default: "active",
-      },
-      organization: {
-        type: String,
-        required: [true, "Organization is required"],
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "JobPost",
+    },
+  ],
+  internshipPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "InternshipPost",
     },
   ],
 }, { timestamps: true });
