@@ -44,24 +44,7 @@ const JobPostSchema = new mongoose.Schema({
       type: Date,
       default: Date.now, // Automatically sets the date when the job is posted
     },
-    applications: [
-      {
-        student: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Student", // Reference to the student applying
-          required: true,
-        },
-        status: {
-          type: String,
-          enum: ["applied", "under review", "rejected", "accepted"],
-          default: "applied", // Default status when a student first applies
-        },
-        appliedDate: {
-          type: Date,
-          default: Date.now, // Date when the student applied
-        },
-      },
-    ],
+    
   }, { timestamps: true });
 const Jobpost = mongoose.model("JobPost", JobPostSchema);
 module.exports = Jobpost;

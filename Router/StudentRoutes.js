@@ -45,7 +45,17 @@ router.post("/skillsave",isAuthenticated(Studuent),studentcontroller.skillsave)
 // skill test and fail then remove in profile
 router.post("/skillremove",isAuthenticated(Studuent),studentcontroller.skillremove)
 
+
+router.post("/apply/:jobpostid",isAuthenticated(Studuent),studentcontroller.applyApplication);
+
+
 router.get("/allapplication",isAuthenticated(Studuent),studentcontroller.allapplication)
+
+
+router.get("application/:jobpostid",isAuthenticated(Studuent),studentcontroller.getApplicationById);
+
+
+router.put("/withdraw/:jobpostid",isAuthenticated(Studuent),studentcontroller.withdrawApplication);
 
 
 

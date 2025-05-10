@@ -45,29 +45,7 @@ const StudentSchema = new mongoose.Schema({
   ],
 
   // New unified applications tracking
-  appliedPosts: [
-    {
-      postType: {
-        type: String,
-        enum: ["JobPost", "InternshipPost"],
-        required: true,
-      },
-      post: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        refPath: "appliedPosts.postType",
-      },
-      applicationStatus: {
-        type: String,
-        enum: ["applied", "under review", "rejected", "accepted"],
-        default: "applied",
-      },
-      appliedDate: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
+
 }, { timestamps: true });
 
 

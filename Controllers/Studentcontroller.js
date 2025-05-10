@@ -3,6 +3,8 @@ const Errorhandler = require("../Utils/ErrorHandler");
 const studentmodel = require("../Models/StudentModel");
 const { SendToken } = require("../Utils/SendToken");
 const ErrorHandler = require("../Utils/ErrorHandler");
+const Application = require("../Models/Application");
+const Jobpost = require("../Models/JobPost");
 
 
 exports.home = catchAsync(async (req, res,next) => {
@@ -155,9 +157,106 @@ exports.skillremove  = catchAsync(async (req, res,next) => {
   });
 });
 
+// Apply for a job
+exports.applyApplication = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const jobpostId = req.params.jobpostid;
+
+    const existingApp = await Application.findOne({ student: studentId, post: jobpostId });
+    if (existingApp) {
+      return res.status(400).json({ message: "You have already applied for this job post." });
+    }
+
+    const student = await studentmodel.findById(studentId);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    const job = await Jobpost.findById(jobpostId);
+    if (!job) return res.status(404).json({ message: "Job post not found" });
+
+    const {
+      resume,
+      skills,
+      achievements,
+      workExperience,
+      projects,
+      applicantphonenumber,
+    } = req.body;
+
+    const application = await Application.create({
+      applicantname: student.name,
+      applicantemail: student.email,
+      applicantphonenumber,
+      resume,
+      skills,
+      achievements,
+      workExperience,
+      projects,
+      student: studentId,
+      post: jobpostId,
+    });
+
+ 
+    return res.status(201).json({ message: "Application submitted", application });
+  } catch (error) {
+    return res.status(500).json({ message: "Error applying", error: error.message });
+  }
+};
 
 
-exports.allapplication= catchAsync(async (req, res,next) => {
+// Get all applications for the logged-in student
+exports.allapplication = async (req, res) => {
+  try {
+    const applications = await Application.find({ student: req.user._id })
+      .populate("post", "title company")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ applications });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch applications", error: error.message });
+  }
+};
 
 
-});
+// Get application for a specific job post
+exports.getApplicationById = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const jobpostId = req.params.jobpostid;
+
+    const application = await Application.findOne({ student: studentId, post: jobpostId })
+      .populate("post", "title company");
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.status(200).json({ application });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch application", error: error.message });
+  }
+};
+
+
+// Withdraw application
+exports.withdrawApplication = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const jobpostId = req.params.jobpostid;
+
+    const application = await Application.findOneAndDelete({ student: studentId, post: jobpostId });
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // Optionally remove from student's appliedPosts
+    await studentmodel.findByIdAndUpdate(studentId, {
+      $pull: { appliedPosts: { post: jobpostId } },
+    });
+
+    res.status(200).json({ message: "Application withdrawn successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to withdraw application", error: error.message });
+  }
+};

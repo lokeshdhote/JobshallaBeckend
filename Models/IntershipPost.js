@@ -43,24 +43,7 @@ const InternshipPostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  applications: [
-    {
-      student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Student",
-        required: true,
-      },
-      status: {
-        type: String,
-        enum: ["applied", "under review", "rejected", "accepted"],
-        default: "applied",
-      },
-      appliedDate: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
+
 }, { timestamps: true });
 
 
