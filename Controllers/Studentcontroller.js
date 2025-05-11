@@ -157,6 +157,7 @@ exports.skillremove  = catchAsync(async (req, res,next) => {
   });
 });
 
+
 // Apply for a job
 exports.applyApplication = async (req, res) => {
   try {
@@ -224,8 +225,7 @@ exports.getApplicationById = async (req, res) => {
     const studentId = req.user._id;
     const jobpostId = req.params.jobpostid;
 
-    const application = await Application.findOne({ student: studentId, post: jobpostId })
-      .populate("post", "title company");
+    const application = await Application.findOne(req.params.applicationtid);
 
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
@@ -244,19 +244,56 @@ exports.withdrawApplication = async (req, res) => {
     const studentId = req.user._id;
     const jobpostId = req.params.jobpostid;
 
-    const application = await Application.findOneAndDelete({ student: studentId, post: jobpostId });
+    const application = await Application.findOneAndDelete(req.params.applicationtid);
 
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    // Optionally remove from student's appliedPosts
-    await studentmodel.findByIdAndUpdate(studentId, {
-      $pull: { appliedPosts: { post: jobpostId } },
-    });
+
 
     res.status(200).json({ message: "Application withdrawn successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to withdraw application", error: error.message });
+  }
+};
+
+
+exports.filter = async (req, res) => {
+  try {
+    const { mode, location, role, minExperience, maxExperience, minAmount, maxAmount } = req.query;
+
+    const filter = {};
+
+    if (mode) {
+      filter.mode = mode; // "Remote", "Office", "Hybrid"
+    }
+
+    if (location) {
+      filter.location = { $regex: location, $options: "i" }; // case-insensitive match
+    }
+
+    if (role) {
+      filter.role = { $regex: role, $options: "i" };
+    }
+
+    if (minExperience || maxExperience) {
+      filter.experience = {};
+      if (minExperience) filter.experience.$gte = Number(minExperience);
+      if (maxExperience) filter.experience.$lte = Number(maxExperience);
+    }
+
+    if (minAmount || maxAmount) {
+      filter.amount = {};
+      if (minAmount) filter.amount.$gte = Number(minAmount);
+      if (maxAmount) filter.amount.$lte = Number(maxAmount);
+    }
+
+    const jobPosts = await Jobpost.find(filter).sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, count: jobPosts.length, jobPosts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };

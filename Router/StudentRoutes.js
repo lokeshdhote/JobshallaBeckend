@@ -46,17 +46,28 @@ router.post("/skillsave",isAuthenticated(Studuent),studentcontroller.skillsave)
 router.post("/skillremove",isAuthenticated(Studuent),studentcontroller.skillremove)
 
 
+
+// apply the application of job 
 router.post("/apply/:jobpostid",isAuthenticated(Studuent),studentcontroller.applyApplication);
 
 
+
+// see all the application of stucent 
 router.get("/allapplication",isAuthenticated(Studuent),studentcontroller.allapplication)
 
 
-router.get("application/:jobpostid",isAuthenticated(Studuent),studentcontroller.getApplicationById);
+
+// see the  specific or selected application of stucent 
+router.get("application/:applicationtid",isAuthenticated(Studuent),studentcontroller.getApplicationById);
 
 
-router.put("/withdraw/:jobpostid",isAuthenticated(Studuent),studentcontroller.withdrawApplication);
 
+// withdraw the  specific or selected application of stucent 
+router.put("/withdraw/:applicationid",isAuthenticated(Studuent),studentcontroller.withdrawApplication);
+
+
+
+router.get("/filter",isAuthenticated(Studuent),studentcontroller.filter);
 
 
 

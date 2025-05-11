@@ -31,6 +31,28 @@ const StudentSchema = new mongoose.Schema({
   dateOfBirth: {
     type: Date,
   },
+  linkdein:{
+    type:String,
+  },
+  github:{
+    type:String,
+  },
+  portfolio:{
+    type:String,
+  },
+resume:{
+  type:String,
+},
+introvideo:{
+  type:String,
+},
+role:{
+  type:String
+},
+  application:[{
+     type: mongoose.Schema.Types.ObjectId,
+          ref: "Application",
+  }],
   verifiedSkills: [
     {
       skill: {
@@ -43,6 +65,48 @@ const StudentSchema = new mongoose.Schema({
       },
     },
   ],
+ passoutYear: {
+    type: Number,
+  },
+  education: [
+    {
+      institution: { type: String },
+      degree: { type: String },
+      fieldOfStudy: { type: String },
+      startDate: { type: Date },
+      endDate: { type: Date },
+      grade: { type: String },
+    }
+  ],
+
+  experience: [
+    {
+      company: { type: String, required: true },
+      position: { type: String, required: true },
+      startDate: { type: Date, required: true },
+      endDate: { type: Date },
+      description: { type: String, maxlength: 1000 },
+      location: { type: String },
+    }
+  ],
+
+  projects: [
+    {
+      title: { type: String, required: true },
+      description: { type: String, maxlength: 500 },
+      technologies: [String],
+      link: { type: String },
+      github: { type: String },
+    }
+  ],
+
+  achievements: [
+    {
+      title: { type: String, required: true },
+    
+    }
+  ],
+
 
   // New unified applications tracking
 
