@@ -29,6 +29,7 @@ const JobSchema = new mongoose.Schema({
     minlength: [6, "Password must be at least 6 characters"],
     maxlength: [16, "Password must be at most 16 characters"],
   },
+  
   resetPasswordToken: {
     type: String,
     default: "0",
